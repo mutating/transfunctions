@@ -63,5 +63,5 @@ lint.select = ["ERA001", "YTT", "ASYNC", "BLE", "B", "A", "COM", "INP", "PIE", "
 format.quote-style = "single"
 
 [project.urls]
-'Source' = 'https://github.com/pomponchik/transfunctions'
-'Tracker' = 'https://github.com/pomponchik/transfunctions/issues'
+'Source' = 'https://github.com/mutating/transfunctions'
+'Tracker' = 'https://github.com/mutating/transfunctions/issues'
