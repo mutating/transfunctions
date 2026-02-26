@@ -21,12 +21,12 @@ from ast import (
     parse,
 )
 from functools import update_wrapper, wraps
-from inspect import getfile, getsource, iscoroutinefunction, isfunction
+from inspect import getfile, iscoroutinefunction, isfunction
 from sys import version_info
 from types import FrameType, FunctionType, MethodType
 from typing import Any, Dict, Generic, List, Optional, Type, Union, cast
 
-from dill.source import getsource as dill_getsource  # type: ignore[import-untyped]
+from getsources import getclearsource
 
 from transfunctions.errors import (
     CallTransfunctionDirectlyError,
@@ -156,32 +156,12 @@ class FunctionTransformer(Generic[FunctionParams, ReturnType]):
             ),
         )
 
-    @staticmethod
-    def clear_spaces_from_source_code(source_code: str) -> str:
-        splitted_source_code = source_code.split('\n')
-
-        indent = 0
-        for letter in splitted_source_code[0]:
-            if letter.isspace():
-                indent += 1
-            else:
-                break
-
-        new_splitted_source_code = [x[indent:] for x in splitted_source_code]
-
-        return '\n'.join(new_splitted_source_code)
-
-
     def extract_context(self, context_name: str, addictional_transformers: Optional[List[NodeTransformer]] = None) -> Callable[FunctionParams, Union[Coroutine[Any, Any, ReturnType], Generator[ReturnType, None, None], ReturnType]]:
         if context_name in self.cache:
             return self.cache[context_name]
-        try:
-            source_code: str = getsource(self.function)
-        except OSError:
-            source_code = dill_getsource(self.function)
 
-        converted_source_code = self.clear_spaces_from_source_code(source_code)
-        tree = parse(converted_source_code)
+        source_code: str = getclearsource(self.function)
+        tree = parse(source_code)
         original_function = self.function
         transfunction_decorator: Optional[Name] = None
         decorator_name = self.decorator_name

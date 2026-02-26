@@ -3,10 +3,10 @@
 
 [![Downloads](https://static.pepy.tech/badge/transfunctions/month)](https://pepy.tech/project/transfunctions)
 [![Downloads](https://static.pepy.tech/badge/transfunctions)](https://pepy.tech/project/transfunctions)
-[![Coverage Status](https://coveralls.io/repos/github/pomponchik/transfunctions/badge.svg?branch=main)](https://coveralls.io/github/pomponchik/transfunctions?branch=main)
-[![Lines of code](https://sloc.xyz/github/pomponchik/transfunctions/?category=code)](https://github.com/boyter/scc/)
-[![Hits-of-Code](https://hitsofcode.com/github/pomponchik/transfunctions?branch=main)](https://hitsofcode.com/github/pomponchik/transfunctions/view?branch=main)
-[![Test-Package](https://github.com/pomponchik/transfunctions/actions/workflows/tests_and_coverage.yml/badge.svg)](https://github.com/pomponchik/transfunctions/actions/workflows/tests_and_coverage.yml)
+[![Coverage Status](https://coveralls.io/repos/github/mutating/transfunctions/badge.svg?branch=main)](https://coveralls.io/github/mutating/transfunctions?branch=main)
+[![Lines of code](https://sloc.xyz/github/mutating/transfunctions/?category=code)](https://github.com/boyter/scc/)
+[![Hits-of-Code](https://hitsofcode.com/github/mutating/transfunctions?branch=main)](https://hitsofcode.com/github/mutating/transfunctions/view?branch=main)
+[![Test-Package](https://github.com/mutating/transfunctions/actions/workflows/tests_and_coverage.yml/badge.svg)](https://github.com/mutating/transfunctions/actions/workflows/tests_and_coverage.yml)
 [![Python versions](https://img.shields.io/pypi/pyversions/transfunctions.svg)](https://pypi.python.org/pypi/transfunctions)
 [![PyPI version](https://badge.fury.io/py/transfunctions.svg)](https://badge.fury.io/py/transfunctions)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
@@ -14,7 +14,7 @@
 
 </details>
 
-![logo](https://raw.githubusercontent.com/pomponchik/transfunctions/develop/docs/assets/logo_2.svg)
+![logo](https://raw.githubusercontent.com/mutating/transfunctions/develop/docs/assets/logo_2.svg)
 
 This library is designed to solve one of the most important problems in python programming - dividing all written code into 2 camps: sync and async. We get rid of code duplication by using templates.
 
@@ -333,4 +333,4 @@ def my_superfunction():
         yield_from_it([1, 2, 3])
 ```
 
-The keywords yield or yield from are available to you and work perfectly, but from the point of view of a static type checker, they turn the function into a generator, which should also mean a special type annotation. By replacing this fragment with a function call, we hack it.
+The keywords `yield` or `yield from` are available to you and work perfectly, but from the point of view of a static type checker, they turn the function into a generator, which should also mean a special type annotation. By replacing this fragment with a function call, we hack it.
