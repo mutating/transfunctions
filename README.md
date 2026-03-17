@@ -16,7 +16,7 @@
 
 ![logo](https://raw.githubusercontent.com/mutating/transfunctions/develop/docs/assets/logo_2.svg)
 
-This library is designed to solve one of the most important problems in python programming — dividing all written code into 2 camps: sync and async. We get rid of code duplication by using templates.
+This library is designed to solve one of the most important problems in Python programming — dividing all written code into two camps: sync and async. We get rid of code duplication by using templates.
 
 
 ## Table of contents
@@ -163,7 +163,7 @@ async def template():
     print("it's an async function!")
 ```
 
-Finally, method `get_generator_function` will return a generator function that looks like this:
+Finally, the method `get_generator_function` will return a generator function that looks like this:
 
 ```python
 def template():
@@ -175,7 +175,7 @@ def template():
 All generated functions:
 
 - Inherit the access to global variables and closures that the original template function had.
-- Сan be either ordinary stand-alone functions or bound methods. In the latter case, they will be linked to the same object.
+- Can be either ordinary standalone functions or bound methods. In the latter case, they will be linked to the same object.
 
 There is only one known limitation: you cannot use any third-party decorators on the template using the decorator syntax, because in some situations this can lead to ambiguous behavior. If you still really need to use a third-party decorator, just generate any of the functions from the template, and then apply your decorator to the result of the generation.
 
@@ -311,7 +311,7 @@ Typing is the most difficult problem we faced when developing this library. In m
 
 There are 2 main difficulties in developing typing here:
 
-- Code generation creates code in runtime that is not in the source files of your project. Whereas most type analyzers look at your code statically, at what is actually present in your files.
+- Code generation creates code at runtime that is not in the source files of your project. Whereas most type analyzers look at your code statically, at what is actually present in your files.
 - We mix several types of syntax in a single template function, but the static analyzer does not know that this is a template and part of the code will be deleted from here. In its opinion, this is the final function that will continue to be used in your project.
 
 As you can see, typing in Python is not well suited for metaprogramming. However, in this project, almost all the problems with typing turned out to be solved in one way or another. The main reason why this is so is that we mostly *remove* code from functions, but hardly *add* it there during code generation. In other words, we almost never encounter the problem of how to type the *added* code. This makes the solution to most typing problems accessible. However! Unfortunately, we were not able to completely hide all the typing problems under the hood, but you should still be aware of some of them if you use `mypy` or another analyzer.
