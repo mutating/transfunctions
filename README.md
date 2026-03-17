@@ -16,7 +16,7 @@
 
 ![logo](https://raw.githubusercontent.com/mutating/transfunctions/develop/docs/assets/logo_2.svg)
 
-This library is designed to solve one of the most important problems in python programming - dividing all written code into 2 camps: sync and async. We get rid of code duplication by using templates.
+This library is designed to solve one of the most important problems in python programming — dividing all written code into 2 camps: sync and async. We get rid of code duplication by using templates.
 
 
 ## Table of contents
