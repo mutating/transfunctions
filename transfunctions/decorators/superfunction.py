@@ -125,7 +125,7 @@ def superfunction(  # type: ignore[misc]
 
         if not tilde_syntax:
             class NoReturns(NodeTransformer):
-                def visit_Return(self, node: Return) -> Optional[Union[AST, List[AST]]]:  # noqa: ARG002, N802
+                def visit_Return(self, node: Return) -> Optional[Union[AST, List[AST]]]:  # noqa: ARG002
                     raise WrongTransfunctionSyntaxError('A superfunction cannot contain a return statement.')
             transformer.get_usual_function(addictional_transformers=[NoReturns()])
 
@@ -137,7 +137,7 @@ def superfunction(  # type: ignore[misc]
 
         return wrapper
 
-    if len(args):
+    if args:
         return decorator(args[0])
 
     return decorator
