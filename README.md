@@ -174,7 +174,7 @@ def template():
 
 All generated functions:
 
-- Inherit the access to global variables and closures that the original template function had.
+- Inherit access to global variables and closures that the original template function had.
 - Can be either ordinary standalone functions or bound methods. In the latter case, they will be linked to the same object.
 
 There is only one known limitation: you cannot use any third-party decorators on the template using the decorator syntax, because in some situations this can lead to ambiguous behavior. If you still really need to use a third-party decorator, just generate any of the functions from the template, and then apply your decorator to the result of the generation.
@@ -202,7 +202,7 @@ async def template():
     await sleep(5)
 ```
 
-All markers do not need to be imported in order for the generated code to be functional: they are destroyed during the [code generation](#code-generation). However, you can do this if your linter or syntax checker in your IDE requires it:
+None of the markers need to be imported in order for the generated code to be functional: they are destroyed during the [code generation](#code-generation). However, you can do this if your linter or syntax checker in your IDE requires it:
 
 ```python
 from transfunctions import (
@@ -282,7 +282,7 @@ list(my_superfunction())
 #> so, it's a generator function!
 ```
 
-How does it work? In fact, `my_superfunction` returns some kind of intermediate object that can be both a coroutine and a generator and an ordinary function. Depending on how it is handled, it lazily code-generates the desired version of the function from a given template and uses it.
+How does it work? In fact, `my_superfunction` returns some kind of intermediate object that can behave as a coroutine, a generator, or a regular callable. Depending on how it is handled, it lazily code-generates the desired version of the function from a given template and uses it.
 
 By default, a superfunction is called as a regular function using tilde syntax, but there is another mode. To enable it, use the appropriate flag in the decorator:
 
@@ -333,4 +333,4 @@ def my_superfunction():
         yield_from_it([1, 2, 3])
 ```
 
-The keywords `yield` or `yield from` are available to you and work perfectly, but from the point of view of a static type checker, they turn the function into a generator, which should also mean a special type annotation. By replacing this fragment with a function call, we hack it.
+The keywords `yield` or `yield from` are available to you and work perfectly, but from the point of view of a static type checker, they turn the function into a generator, which should also mean a special type annotation. Replacing the syntax with a function call avoids confusing the type checker.
