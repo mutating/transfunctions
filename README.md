@@ -16,7 +16,7 @@
 
 ![logo](https://raw.githubusercontent.com/mutating/transfunctions/develop/docs/assets/logo_2.svg)
 
-This library is designed to solve one of the most important problems in Python programming — dividing all written code into two camps: sync and async. We get rid of code duplication by using templates.
+This library is designed to solve one of the most important problems in Python programming — splitting code into two categories: sync and async. It reduces code duplication by using templates.
 
 
 ## Table of contents
@@ -79,13 +79,13 @@ You can also quickly try out this and other packages without having to install u
 
 ## The problem
 
-Since the `asyncio` module appeared in Python more than 10 years ago, many well-known libraries have received their asynchronous alternates. A lot of the code in the Python ecosystem has been [duplicated](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), and you probably know many such examples.
+Since the `asyncio` module appeared in Python more than 10 years ago, many well-known libraries have gained asynchronous counterparts. A lot of the code in the Python ecosystem has been [duplicated](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), and you probably know many such examples.
 
-The reason for this problem is that the Python community has chosen a way to implement asynchrony expressed through syntax. There are new keywords in the language, such as `async` and `await`. Their use makes the code so-called "[multicolored](https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/)": all the functions in it can be red or blue, and depending on the color, the rules for calling them are different. You can only call blue functions from red ones, but not vice versa.
+The reason for this problem is that the Python community has chosen a syntax-based approach to asynchrony. There are new keywords in the language, such as `async` and `await`. Their use makes the code so-called "[multicolored](https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/)": functions become “red” or “blue”, and depending on the color, the rules for calling them are different. You can only call blue functions from red ones, but not vice versa.
 
-I must say that implementing asynchronous calls using a special syntax is not the only solution. There are languages like Go where runtime can independently determine "under the hood" where a function should be asynchronous and where not, and choose the correct way to call it. A programmer does not need to manually "colorize" their functions there. Personally, I think that choosing a different path is the mistake of the Python community, but that's not what we're discussing here.
+I must say that implementing asynchronous calls using a special syntax is not the only solution. There are languages like Go where the runtime can determine under the hood where a function should be asynchronous and where not, and choose how to execute them. A programmer does not need to manually "colorize" their functions there. Personally, I think that choosing a different path is the mistake of the Python community, but that's not what we're discussing here.
 
-The solution offered by this library is based on templating. You can take a certain function as a template and generate several others based on it: regular, asynchronous, or generator. This allows you to avoid duplicating code where it was previously impossible. And all this without major changes in Python syntax or in the internal structure of the interpreter. We're just "sweeping under the carpet" syntax differences. Combined with the idea of context-aware functions, this makes for an even more powerful tool: `superfunctions`. This allows you to create a single function object that can be handled as you like: as a regular function, as an asynchronous function, or as a generator. The function will behave the way you use it. Thus, this library solves the problem of code duplication caused by the syntactic approach to marking asynchronous execution sections.
+The solution offered by this library is based on templating. You can take a certain function as a template and generate several others based on it: regular, asynchronous, or generator. This allows you to avoid duplicating code where it was previously impossible. And all this without major changes in Python syntax or in the internal structure of the interpreter. We are essentially hiding the syntax differences. Combined with the idea of context-aware functions, this makes for an even more powerful tool: `superfunctions`. This allows you to create a single function object that can be handled as you like: as a regular function, as an asynchronous function, or as a generator. The function will behave the way you use it. Thus, this library solves the problem of code duplication caused by the syntactic approach to marking asynchronous execution sections.
 
 
 ## Code generation
@@ -257,7 +257,7 @@ With the `@superfunction` decorator, you no longer need to call special methods 
 
 If you use it as a regular function, a regular function will be created "under the hood" based on the template and then called:
 
-To call a superfunction like a regular function, you need to use a special tilde syntax:
+To call a superfunction like a regular function, you need to use a special tilde-based call syntax:
 
 ```python
 ~my_superfunction()
@@ -297,9 +297,9 @@ my_superfunction()
 #> so, it's just usual function!
 ```
 
-However, it is not completely free. The fact is that this mode uses a special trick with a reference counter, a special mechanism inside the interpreter that cleans up memory. When there is no reference to an object, the interpreter deletes it, and you can link your callback to this process. It is inside such a callback that the contents of your function are actually executed. This imposes some restrictions on you:
+However, it comes with trade-offs. The fact is that this mode uses a special trick with a reference counter, a special mechanism inside the interpreter that cleans up memory. When there is no reference to an object, the interpreter deletes it, and you can link your callback to this process. It is inside such a callback that the contents of your function are actually executed. This imposes some restrictions on you:
 
-- You cannot use the return values from this function in any way. If you try to save the result of a function call to a variable, the reference counter to the returned object will not reset while this variable exists, and accordingly the function will not actually be called.
+- You cannot use the return values from this function in any way. If you try to save the result of a function call to a variable, the reference counter to the returned object will not drop to zero while this variable exists, and accordingly the function will not actually be called.
 - Exceptions will not work normally inside this function. Rather, they can be picked up and intercepted in [`sys.unraisablehook`](https://docs.python.org/3/library/sys.html#sys.unraisablehook), but they will not go up the stack above this function. This is due to a feature of CPython: exceptions that occur inside callbacks for finalizing objects are completely escaped.
 
 This mode is well suited for functions such as logging or sending statistics from your code: simple functions from which no exceptions or return values are expected. In all other cases, I recommend using the tilde syntax.
@@ -314,7 +314,7 @@ There are 2 main difficulties in developing typing here:
 - Code generation creates code at runtime that is not in the source files of your project. Whereas most type analyzers look at your code statically, at what is actually present in your files.
 - We mix several types of syntax in a single template function, but the static analyzer does not know that this is a template and part of the code will be deleted from here. In its opinion, this is the final function that will continue to be used in your project.
 
-As you can see, typing in Python is not well suited for metaprogramming. However, in this project, almost all the problems with typing turned out to be solved in one way or another. The main reason why this is so is that we mostly *remove* code from functions, but hardly *add* it there during code generation. In other words, we almost never encounter the problem of how to type the *added* code. This makes the solution to most typing problems accessible. However! Unfortunately, we were not able to completely hide all the typing problems under the hood, but you should still be aware of some of them if you use `mypy` or another analyzer.
+As you can see, typing in Python is not well suited for metaprogramming. However, in this project, almost all the problems with typing turned out to be solved in one way or another. The main reason why this is so is that we mostly *remove* code from functions, but hardly *add* it there during code generation. In other words, we almost never encounter the problem of how to type the *added* code. This makes the solution to most typing problems accessible. However, we were not able to completely hide all the typing problems under the hood, but you should still be aware of some of them if you use `mypy` or another analyzer.
 
 If you use the keyword `yield from`, you need to call the function `yield_from_it` instead:
 
