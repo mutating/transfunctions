@@ -90,7 +90,7 @@ class FunctionTransformer(Generic[FunctionParams, ReturnType]):
         original_function = self.function
 
         class ConvertSyncFunctionToAsync(NodeTransformer):
-            def visit_FunctionDef(self, node: FunctionDef) -> Union[FunctionDef, AsyncFunctionDef]:  # noqa: N802
+            def visit_FunctionDef(self, node: FunctionDef) -> Union[FunctionDef, AsyncFunctionDef]:
                 if node.name == original_function.__name__:
                     return AsyncFunctionDef(  # type: ignore[no-any-return, call-overload, unused-ignore]
                         name=original_function.__name__,
@@ -105,7 +105,7 @@ class FunctionTransformer(Generic[FunctionParams, ReturnType]):
                 return node
 
         class ExtractAwaitExpressions(NodeTransformer):
-            def visit_Call(self, node: Call) -> Union[Call, Await]:  # noqa: N802
+            def visit_Call(self, node: Call) -> Union[Call, Await]:
                 if isinstance(node.func, Name) and node.func.id == 'await_it':
                     if len(node.args) != 1 or node.keywords:
                         raise WrongMarkerSyntaxError('The "await_it" marker can be used with only one positional argument.')
@@ -132,7 +132,7 @@ class FunctionTransformer(Generic[FunctionParams, ReturnType]):
 
     def get_generator_function(self) -> Callable[FunctionParams, Generator[ReturnType, None, None]]:
         class ConvertYieldFroms(NodeTransformer):
-            def visit_Call(self, node: Call) -> Optional[Union[AST, List[AST]]]:  # noqa: N802
+            def visit_Call(self, node: Call) -> Optional[Union[AST, List[AST]]]:
                 if isinstance(node.func, Name) and node.func.id == 'yield_from_it':
                     if len(node.args) != 1 or node.keywords:
                         raise WrongMarkerSyntaxError('The "yield_from_it" marker can be used with only one positional argument.')
@@ -168,7 +168,7 @@ class FunctionTransformer(Generic[FunctionParams, ReturnType]):
         check_decorators = self.check_decorators
 
         class RewriteContexts(NodeTransformer):
-            def visit_With(self, node: With) -> Optional[Union[AST, List[AST]]]:  # noqa: N802
+            def visit_With(self, node: With) -> Optional[Union[AST, List[AST]]]:
                 if len(node.items) == 1:
                     if isinstance(node.items[0].context_expr, Name):
                         context_expr = node.items[0].context_expr
@@ -182,7 +182,7 @@ class FunctionTransformer(Generic[FunctionParams, ReturnType]):
                 return node
 
         class DeleteDecorator(NodeTransformer):
-            def visit_FunctionDef(self, node: FunctionDef) -> Optional[Union[AST, List[AST]]]:  # noqa: N802
+            def visit_FunctionDef(self, node: FunctionDef) -> Optional[Union[AST, List[AST]]]:
                 if node.name == original_function.__name__:
                     nonlocal transfunction_decorator
                     transfunction_decorator = None

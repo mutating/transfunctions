@@ -1,4 +1,3 @@
-# noqa: A005
 import sys
 from collections.abc import Iterable
 from typing import TypeVar
