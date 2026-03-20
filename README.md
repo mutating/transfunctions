@@ -319,7 +319,7 @@ As you can see, typing in Python is not well suited for metaprogramming. However
 If you use the keyword `yield from`, you need to call the function `yield_from_it` instead:
 
 ```python
-from transfunctions import yield_it
+from transfunctions import yield_from_it
 
 @superfunction
 def my_superfunction():
