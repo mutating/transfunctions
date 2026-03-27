@@ -56,7 +56,7 @@ jobs:
         shell: bash
         run: coverage run --branch --source=transfunctions --omit="*tests*" -m pytest --cache-clear --assert=plain && coverage report -m --fail-under=94
 
-  # 2. A separate job specifically for bug testing in Python 3.9.1 (Linux only)
+  # A separate job specifically for bug testing in Python 3.9.1 (Linux only)
   build-3-9-1:
     runs-on: ubuntu-latest
     container: python:3.9.1

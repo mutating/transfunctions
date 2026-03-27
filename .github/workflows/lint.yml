@@ -43,6 +43,7 @@ jobs:
       - name: Run mypy for tests
         run: mypy tests --exclude typing
 
+  # A separate job specifically for bug testing in Python 3.9.1 (Linux only)
   build-3-9-1:
     runs-on: ubuntu-latest
     container: python:3.9.1
