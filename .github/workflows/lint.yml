@@ -7,14 +7,27 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.9.1", "3.10", "3.11", "3.12", "3.13", "3.14", "3.14t", "3.15.0-alpha.1"]
-        os: [ubuntu-latest]
-      exclude:
-        - python-version: 3.9.1
-          os: ubuntu-latest
-      include:
-        - python-version: 3.9.1
-          os: ubuntu-24.04
+        include:
+          - os: ubuntu-latest
+            python-version: 3.8
+          - os: ubuntu-latest
+            python-version: 3.9
+          - os: ubuntu-24.04
+            python-version: 3.9.1
+          - os: ubuntu-latest
+            python-version: 3.10
+          - os: ubuntu-latest
+            python-version: 3.11
+          - os: ubuntu-latest
+            python-version: 3.12
+          - os: ubuntu-latest
+            python-version: 3.13
+          - os: ubuntu-latest
+            python-version: 3.14
+          - os: ubuntu-latest
+            python-version: 3.14t
+          - os: ubuntu-latest
+            python-version: 3.15.0-alpha.1
 
     steps:
       - uses: actions/checkout@v4
