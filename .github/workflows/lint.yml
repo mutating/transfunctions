@@ -3,31 +3,13 @@ name: Lint
 on: push
 
 jobs:
+  # Основной джоб для современных версий
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            python-version: "3.8"
-          - os: ubuntu-latest
-            python-version: "3.9"
-          - os: ubuntu-20.04
-            python-version: "3.9.1"
-          - os: ubuntu-latest
-            python-version: "3.10"   # <--- Вот здесь была главная проблема
-          - os: ubuntu-latest
-            python-version: "3.11"
-          - os: ubuntu-latest
-            python-version: "3.12"
-          - os: ubuntu-latest
-            python-version: "3.13"
-          - os: ubuntu-latest
-            python-version: "3.14"
-          - os: ubuntu-latest
-            python-version: "3.14t"
-          - os: ubuntu-latest
-            python-version: "3.15.0-alpha.1"
+        # Вернули чистый список без 3.9.1
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.14t", "3.15.0-alpha.1"]
 
     steps:
       - uses: actions/checkout@v4
@@ -42,9 +24,39 @@ jobs:
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ github.workflow }}-${{ hashFiles('requirements_dev.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ github.workflow }}-
-            ${{ runner.os }}-pip-${{ github.workflow }}-
+
+      - name: Install dependencies
+        run: pip install -r requirements_dev.txt
+
+      - name: Install the library
+        run: pip install .
+
+      - name: Run ruff
+        run: ruff check transfunctions
+
+      - name: Run ruff for tests
+        run: ruff check tests
+
+      - name: Run mypy
+        run: mypy --strict transfunctions
+
+      - name: Run mypy for tests
+        run: mypy tests --exclude typing
+
+  # Отдельный джоб специально для проблемного патча 3.9.1
+  build-3-9-1:
+    runs-on: ubuntu-latest
+    container: python:3.9.1  # Запускаем прямо внутри чистого образа 3.9.1
+    steps:
+      - uses: actions/checkout@v4
+
+      # Нам больше НЕ НУЖЕН actions/setup-python, так как в контейнере уже стоит 3.9.1!
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: debian-pip-3.9.1-${{ github.workflow }}-${{ hashFiles('requirements_dev.txt') }}
 
       - name: Install dependencies
         run: pip install -r requirements_dev.txt
