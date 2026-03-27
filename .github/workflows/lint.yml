@@ -9,11 +9,11 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9", "3.9.1", "3.10", "3.11", "3.12", "3.13", "3.14", "3.14t", "3.15.0-alpha.1"]
         os: [ubuntu-latest]
-      exclude:  # ← На уровне matrix (отступ 6 пробелов от strategy)
-        - python-version: '3.9.1'
+      exclude:
+        - python-version: 3.9.1
           os: ubuntu-latest
-      include:  # ← На уровне matrix
-        - python-version: '3.9.1'
+      include:
+        - python-version: 3.9.1
           os: ubuntu-24.04
 
     steps:
@@ -34,25 +34,19 @@ jobs:
             ${{ runner.os }}-pip-${{ github.workflow }}-
 
       - name: Install dependencies
-        shell: bash
         run: pip install -r requirements_dev.txt
 
       - name: Install the library
-        shell: bash
         run: pip install .
 
       - name: Run ruff
-        shell: bash
         run: ruff check transfunctions
 
       - name: Run ruff for tests
-        shell: bash
         run: ruff check tests
 
       - name: Run mypy
-        shell: bash
         run: mypy --strict transfunctions
 
       - name: Run mypy for tests
-        shell: bash
         run: mypy tests --exclude typing
