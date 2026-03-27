@@ -12,32 +12,32 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install the library
-        shell: bash
-        run: pip install .
-
       - name: Cache pip dependencies
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ github.workflow }}-${{ hashFiles('requirements_dev.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-${{ github.workflow }}-
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ github.workflow }}-${{ hashFiles('requirements_dev.txt') }}
 
       - name: Install dependencies
         shell: bash
         run: pip install -r requirements_dev.txt
+
+      - name: Install the library
+        shell: bash
+        run: pip install .
 
       - name: Print all libs
         shell: bash
         run: pip list
 
       - name: Run tests and show coverage on the command line
+        shell: bash
         run: |
           coverage run --source=transfunctions --omit="*tests*" -m pytest --cache-clear --assert=plain && coverage report -m --fail-under=94
           coverage xml
@@ -53,4 +53,38 @@ jobs:
         continue-on-error: true
 
       - name: Run tests and show the branch coverage on the command line
+        shell: bash
+        run: coverage run --branch --source=transfunctions --omit="*tests*" -m pytest --cache-clear --assert=plain && coverage report -m --fail-under=94
+
+  # A separate job specifically for bug testing in Python 3.9.1 (Linux only)
+  build-3-9-1:
+    runs-on: ubuntu-latest
+    container: python:3.9.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ubuntu-pip-3.9.1-${{ github.workflow }}-${{ hashFiles('requirements_dev.txt') }}
+
+      - name: Install dependencies
+        shell: bash
+        run: pip install -r requirements_dev.txt
+
+      - name: Install the library
+        shell: bash
+        run: pip install .
+
+      - name: Print all libs
+        shell: bash
+        run: pip list
+
+      - name: Run tests and show coverage on the command line
+        shell: bash
+        run: coverage run --source=transfunctions --omit="*tests*" -m pytest --cache-clear --assert=plain && coverage report -m --fail-under=94
+
+      - name: Run tests and show the branch coverage on the command line
+        shell: bash
         run: coverage run --branch --source=transfunctions --omit="*tests*" -m pytest --cache-clear --assert=plain && coverage report -m --fail-under=94

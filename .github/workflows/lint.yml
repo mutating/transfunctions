@@ -3,10 +3,12 @@ name: Lint
 on: push
 
 jobs:
+  # Основной джоб для современных версий
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        # Вернули чистый список без 3.9.1
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.14t", "3.15.0-alpha.1"]
 
     steps:
@@ -21,30 +23,53 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ github.workflow }}-${{ hashFiles('requirements_dev.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-${{ github.workflow }}-
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ github.workflow }}-${{ hashFiles('requirements_dev.txt') }}
 
       - name: Install dependencies
-        shell: bash
         run: pip install -r requirements_dev.txt
 
       - name: Install the library
-        shell: bash
         run: pip install .
 
       - name: Run ruff
-        shell: bash
         run: ruff check transfunctions
 
       - name: Run ruff for tests
-        shell: bash
         run: ruff check tests
 
       - name: Run mypy
-        shell: bash
         run: mypy --strict transfunctions
 
       - name: Run mypy for tests
-        shell: bash
+        run: mypy tests --exclude typing
+
+  # A separate job specifically for bug testing in Python 3.9.1 (Linux only)
+  build-3-9-1:
+    runs-on: ubuntu-latest
+    container: python:3.9.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: debian-pip-3.9.1-${{ github.workflow }}-${{ hashFiles('requirements_dev.txt') }}
+
+      - name: Install dependencies
+        run: pip install -r requirements_dev.txt
+
+      - name: Install the library
+        run: pip install .
+
+      - name: Run ruff
+        run: ruff check transfunctions
+
+      - name: Run ruff for tests
+        run: ruff check tests
+
+      - name: Run mypy
+        run: mypy --strict transfunctions
+
+      - name: Run mypy for tests
         run: mypy tests --exclude typing

@@ -12,7 +12,7 @@ if sys.version_info <= (3, 10):
 else:
     from typing import TypeAlias
 
-if sys.version_info <= (3, 9):
+if sys.version_info <= (3, 10):
     from typing import Callable, Coroutine, Generator  # pragma: no cover
 else:
     from collections.abc import Callable, Coroutine, Generator
