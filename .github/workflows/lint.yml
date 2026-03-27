@@ -43,14 +43,11 @@ jobs:
       - name: Run mypy for tests
         run: mypy tests --exclude typing
 
-  # Отдельный джоб специально для проблемного патча 3.9.1
   build-3-9-1:
     runs-on: ubuntu-latest
-    container: python:3.9.1  # Запускаем прямо внутри чистого образа 3.9.1
+    container: python:3.9.1
     steps:
       - uses: actions/checkout@v4
-
-      # Нам больше НЕ НУЖЕН actions/setup-python, так как в контейнере уже стоит 3.9.1!
 
       - name: Cache pip dependencies
         uses: actions/cache@v4
