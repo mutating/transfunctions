@@ -36,6 +36,7 @@ classifiers = [
     'Topic :: Software Development :: Libraries',
     'Topic :: Software Development :: Code Generators',
     'Framework :: AsyncIO',
+    'Typing :: Typed',
 ]
 keywords = [
     'async',
